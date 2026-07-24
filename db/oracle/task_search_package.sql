@@ -47,12 +47,17 @@ CREATE OR REPLACE PACKAGE BODY task_search_pkg AS
 
         -- Total count for pagination metadata
         SELECT COUNT(*)
-          INTO p_total_count
-          FROM tasks
-         WHERE archived = 0
-           AND LOWER(title) LIKE v_term
-            OR LOWER(description) LIKE v_term
-           AND (p_status IS NULL OR status = p_status);
+  INTO p_total_count
+  FROM tasks
+ WHERE archived = 0
+   AND (
+        LOWER(title) LIKE v_term
+        OR LOWER(description) LIKE v_term
+   )
+   AND (
+        p_status IS NULL
+        OR status = p_status
+   );
 
         -- Paginated results using ROWNUM (pre-12c pattern)
         OPEN p_results FOR
